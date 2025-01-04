@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="jp">
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="/src/styles.css" />
@@ -10,36 +10,16 @@
 
   <body>
     <main id="container">
-      <canvas id="myCanvas"></canvas>
-      <h1>Welcome to Tauri</h1>
-      <button id="test">hello</button>
-
-      <div class="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/src/assets/vite.svg" class="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img
-            src="/src/assets/tauri.svg"
-            class="logo tauri"
-            alt="Tauri logo"
-          />
-        </a>
-        <a href="https://www.typescriptlang.org/docs" target="_blank">
-          <img
-            src="/src/assets/typescript.svg"
-            class="logo typescript"
-            alt="typescript logo"
-          />
-        </a>
-      </div>
-      <p>Click on the Tauri logo to learn more about the framework</p>
-
-      <form class="row" id="greet-form">
-        <input id="greet-input" placeholder="Enter a name..." />
-        <button type="submit">Greet</button>
+      <h1>Welcome</h1>
+      <p>追加したいボールを入力して、ゲーム画面に移動してください</p>
+      <form class="column" id="ball-form" onsubmit="">
+        <div class="ball-input">
+          <input class="ball-name" id="ball-name" required placeholder="Enter ball name..." />
+          <input class="ball-priority" id="ball-priority" type="number" placeholder="Priority" value="1" />
+        </div>
+        <button type="button" id="add-ball">+</button>
+        <button type="submit" style="margin: 1rem">ゲーム開始</button>
       </form>
-      <p id="greet-msg"></p>
     </main>
   </body>
 </html>
