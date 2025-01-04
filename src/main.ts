@@ -32,7 +32,10 @@ document.getElementById('ball-form')?.addEventListener('submit', function(e) {
   ballDataArray.length = 0;
 
   ballInputs.forEach(inputDiv => {
-    const name = (inputDiv.querySelector('.ball-name') as HTMLInputElement).value;
+    let name = (inputDiv.querySelector('.ball-name') as HTMLInputElement).value;
+    if (name == null){
+      name = 'ball';
+    }
     const priority = parseInt((inputDiv.querySelector('.ball-priority') as HTMLInputElement).value, 10);
     ballDataArray.push({ name, priority });
   });
