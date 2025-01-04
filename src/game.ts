@@ -356,6 +356,8 @@ function animate() {
     stats.update();
 }
 
+const mobileWidthThreshold = 768;
+
 function render() {
     renderer.setScissorTest(true);
 
@@ -363,17 +365,23 @@ function render() {
     renderer.setScissor(window.innerWidth * 0.3, 0, window.innerWidth * 0.7, window.innerHeight);
     renderer.render(scene, cameraMain);
 
-    renderer.setViewport(0, window.innerHeight * 0.66, window.innerWidth * 0.3, window.innerHeight * 0.33);
-    renderer.setScissor(0, window.innerHeight * 0.66, window.innerWidth * 0.3, window.innerHeight * 0.33);
-    renderer.render(scene, cameraSub1);
+    if (window.innerWidth < mobileWidthThreshold) {
+        renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
+        renderer.setScissor(0, 0, window.innerWidth, window.innerHeight);
+        renderer.render(scene, cameraMain);
+    } else {
+        renderer.setViewport(0, window.innerHeight * 0.66, window.innerWidth * 0.3, window.innerHeight * 0.33);
+        renderer.setScissor(0, window.innerHeight * 0.66, window.innerWidth * 0.3, window.innerHeight * 0.33);
+        renderer.render(scene, cameraSub1);
 
-    renderer.setViewport(0, window.innerHeight * 0.33, window.innerWidth * 0.3, window.innerHeight * 0.33);
-    renderer.setScissor(0, window.innerHeight * 0.33, window.innerWidth * 0.3, window.innerHeight * 0.33);
-    renderer.render(scene, cameraSub2);
+        renderer.setViewport(0, window.innerHeight * 0.33, window.innerWidth * 0.3, window.innerHeight * 0.33);
+        renderer.setScissor(0, window.innerHeight * 0.33, window.innerWidth * 0.3, window.innerHeight * 0.33);
+        renderer.render(scene, cameraSub2);
 
-    renderer.setViewport(0, 0, window.innerWidth * 0.3, window.innerHeight * 0.33);
-    renderer.setScissor(0, 0, window.innerWidth * 0.3, window.innerHeight * 0.33);
-    renderer.render(scene, cameraSub3);
+        renderer.setViewport(0, 0, window.innerWidth * 0.3, window.innerHeight * 0.33);
+        renderer.setScissor(0, 0, window.innerWidth * 0.3, window.innerHeight * 0.33);
+        renderer.render(scene, cameraSub3);
+    }
 
     renderer.setScissorTest(false);
 }
