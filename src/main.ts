@@ -252,11 +252,9 @@ class Ball {
           nearestHole.z - this.body.position.z
       );
       directionToHole.normalize();
-
-      const forceMagnitude = 0.15;
       const attractionDistance = 1.5;
 
-      if (minDistance <= attractionDistance) {
+      if (minDistance <= attractionDistance && this.priority != 1) {
         this.isAttracted = true;
       } else {
         this.isAttracted = false;
@@ -264,7 +262,7 @@ class Ball {
 
       if (this.isAttracted) {
         this.body.applyForce(
-            directionToHole.scale(forceMagnitude),
+            directionToHole.scale((this.priority - 1) * 0.1),
             this.body.position
         );
       }
@@ -280,9 +278,13 @@ class Ball {
 const ballsDict = sessionStorage.getItem('balls');
 const parsedBalls: BallData[] = ballsDict ? JSON.parse(ballsDict) : [];
 
-const balls: Ball[] = parsedBalls.map((ball: BallData, index: number) =>
-    new Ball(BALL_RADIUS, 1.3, 15 + index, 4, ball.name, '#ff0000', ball.priority)
-);
+const balls: Ball[] = parsedBalls.map((ball: BallData, index: number) => {
+  let randomColor = "rgb(" + (~~(256 * Math.random())) + ", " + (~~(256 * Math.random())) + ", " + (~~(256 * Math.random())) + ")";
+  let angle = (index / parsedBalls.length) * 2 * Math.PI;
+  let x = 1.6 + 1.3 * Math.cos(angle);
+  let z = 5 + 1.3 * Math.sin(angle);
+  return new Ball(BALL_RADIUS, x, 15, z, ball.name, randomColor, ball.priority);
+});
 
 window.addEventListener('resize', onWindowResize, false);
 function onWindowResize() {
@@ -334,6 +336,7 @@ switchCamera.add(changeCamera, 'changeMainCamera').name('メインカメラを�
 
 const resetButton = gui.addFolder('Reset');
 resetButton.add({ reset: () => location.reload() }, 'reset').name('リセット');
+
 
 const rayCaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
