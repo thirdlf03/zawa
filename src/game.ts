@@ -39,6 +39,13 @@ let cameraPositions = [
     new THREE.Vector3(0, 3, 3.5)
 ];
 
+let cameraLookAtPositions = [
+    new THREE.Vector3(0, -5, 0),
+    new THREE.Vector3(0, -90, 0),
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(0, -2, 0)
+];
+
 const cameraMain = new THREE.PerspectiveCamera(75, (window.innerWidth * 0.7) / window.innerHeight, 0.1, 1000);
 cameraMain.position.set(cameraPositions[0].x, cameraPositions[0].y, cameraPositions[0].z);
 cameraMain.lookAt(0, -5, 0);
@@ -317,6 +324,8 @@ const changeCamera = {
     changeMainCamera: () => {
         num = (num + 1) % 4;
         cameraMain.position.set(cameraPositions[num].x, cameraPositions[num].y, cameraPositions[num].z);
+        cameraMain.lookAt(cameraLookAtPositions[num].x, cameraLookAtPositions[num].y, cameraLookAtPositions[num].z);
+        controls.target.set(0, 0, 0);
     }
 }
 
