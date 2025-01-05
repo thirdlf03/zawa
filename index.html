@@ -4,21 +4,24 @@
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="./src/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tauri App</title>
+    <title>3段クルーン</title>
     <script type="module" src="./src/main.ts" defer></script>
   </head>
 
   <body>
     <main id="container">
       <h1>Welcome</h1>
-      <p>追加したいボールを入力して、ゲーム画面に移動してください</p>
+      <p>追加したいボールを入力して、ゲーム画面に移動してください<br>球無限モードは重たいの注意してください。<br>無限モードは、右側のGUIからボール生成停止できます</p>
       <form class="column" id="ball-form" onsubmit="">
         <div class="ball-input">
           <input class="ball-name" id="ball-name" placeholder="Enter ball name..." />
           <input class="ball-priority" id="ball-priority" type="number" placeholder="Priority" value="1" />
         </div>
         <button type="button" id="add-ball">+</button>
-        <button type="submit" style="margin: 1rem">ゲーム開始</button>
+        <div>
+          <button type="submit" value="normal" style="margin: 1rem">ゲーム開始</button>
+          <button type="submit" value='inf' style="margin: 1rem">球無限モード</button>
+        </div>
       </form>
     </main>
   </body>

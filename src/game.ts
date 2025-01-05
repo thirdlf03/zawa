@@ -190,6 +190,15 @@ class Ball {
         this.body.position.set(x, y, z);
         world.addBody(this.body);
 
+        const randomVelocity = new CANNON.Vec3(
+            (Math.random() - 0.5) * 1.5,
+            0,
+            (Math.random() - 0.5) * 1.5
+        );
+        this.body.velocity.set(randomVelocity.x, randomVelocity.y, randomVelocity.z);
+
+        world.addBody(this.body);
+
         this.name = name;
         this.priority = priority;
     }
@@ -244,15 +253,31 @@ interface BallData {
 }
 
 const ballsDict = sessionStorage.getItem('balls');
+let mode = sessionStorage.getItem('mode');
 const parsedBalls: BallData[] = ballsDict ? JSON.parse(ballsDict) : [];
 
-const balls: Ball[] = parsedBalls.map((ball: BallData, index: number) => {
-    let randomColor = "rgb(" + (~~(256 * Math.random())) + ", " + (~~(256 * Math.random())) + ", " + (~~(256 * Math.random())) + ")";
-    let angle = (index / parsedBalls.length) * 2 * Math.PI;
-    let x = 1.6 + 1.3 * Math.cos(angle);
-    let z = 5 + 1.3 * Math.sin(angle);
-    return new Ball(BALL_RADIUS, x, 15, z, ball.name, randomColor, ball.priority);
-});
+const balls: Ball[] = [];
+
+function createBall(mode: string | null = 'normal'){
+    if (mode === 'normal') {
+        parsedBalls.forEach((ball: BallData, index: number) => {
+            let randomColor = "rgb(" + (~~(256 * Math.random())) + ", " + (~~(256 * Math.random())) + ", " + (~~(256 * Math.random())) + ")";
+            let angle = (index / parsedBalls.length) * 2 * Math.PI;
+            let x = 1.6 + 1.3 * Math.cos(angle);
+            let z = 5 + 1.3 * Math.sin(angle);
+            balls.push(new Ball(BALL_RADIUS, x, 15, z, ball.name, randomColor, ball.priority));
+        });
+    }
+    else {
+        let randomColor = "rgb(" + (~~(256 * Math.random())) + ", " + (~~(256 * Math.random())) + ", " + (~~(256 * Math.random())) + ")";
+        let angle = (1 / parsedBalls.length) * 2 * Math.PI;
+        let x = 1.6 + 1.3 * Math.cos(angle);
+        let z = 5 + 1.3 * Math.sin(angle);
+        balls.push(new Ball(BALL_RADIUS, x, 15, z, 'ball', randomColor, 1));
+    }
+}
+
+createBall(mode);
 
 window.addEventListener('resize', onWindowResize, false);
 function onWindowResize() {
@@ -295,8 +320,15 @@ const changeCamera = {
     }
 }
 
+let ballNums = {
+    nums: balls.length
+};
+
 const ballInfoFolder = gui.addFolder('Ball Info');
 ballInfoFolder.add(ballInfo, 'name').name('ボール名');
+ballInfoFolder.open();
+
+const ballNumsController = ballInfoFolder.add(ballNums, 'nums').name('ボール数');
 ballInfoFolder.open();
 
 const switchCamera = gui.addFolder('Switch Camera');
@@ -305,6 +337,9 @@ switchCamera.add(changeCamera, 'changeMainCamera').name('メインカメラを�
 const resetButton = gui.addFolder('Reset');
 resetButton.add({ reset: () => location.reload() }, 'reset').name('リセット');
 
+const ballButton = gui.addFolder('Ball (無限モード限定)');
+ballButton.add({ start: startBallCreation }, 'start').name('ボール生成再開');
+ballButton.add({ stop: stopBallCreation }, 'stop').name('ボール生成停止');
 
 const rayCaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -339,9 +374,28 @@ function onMouseDown(event: MouseEvent) {
 const clock = new THREE.Clock();
 let delta: number;
 
+let ballCreationInterval: number | undefined;
+
+function startBallCreation() {
+    if (mode === 'inf') {
+        ballCreationInterval = setInterval(() => {
+            createBall('inf');
+        }, 1000);
+    }
+}
+
+function stopBallCreation() {
+    if (ballCreationInterval !== undefined) {
+        clearInterval(ballCreationInterval);
+        ballCreationInterval = undefined;
+    }
+}
+
 function animate() {
     requestAnimationFrame(animate);
 
+    ballNums.nums = balls.length;
+    ballNumsController.updateDisplay();
     controls.update();
 
     delta = Math.min(clock.getDelta(), 0.05);
@@ -355,6 +409,8 @@ function animate() {
 
     stats.update();
 }
+
+startBallCreation();
 
 const mobileWidthThreshold = 768;
 

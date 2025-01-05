@@ -20,6 +20,10 @@ const ballDataArray: BallData[] = [];
 
 document.getElementById('ball-form')?.addEventListener('submit', function(e) {
   e.preventDefault();
+
+  const submitter = (e as SubmitEvent).submitter as HTMLButtonElement;
+  const buttonValue = submitter.value;
+
   const ballInputs = document.querySelectorAll('.ball-input');
   ballDataArray.length = 0;
 
@@ -33,6 +37,7 @@ document.getElementById('ball-form')?.addEventListener('submit', function(e) {
   });
 
   sessionStorage.setItem('balls', JSON.stringify(ballDataArray));
+  sessionStorage.setItem('mode', buttonValue);
 
   location.href = '/game.html';
 });
